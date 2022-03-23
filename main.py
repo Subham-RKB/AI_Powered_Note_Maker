@@ -1,3 +1,12 @@
+import os
+from tkinter import *
+from tkinter import messagebox
+#creating the application main window
+window = Tk()
+window.title("AI Powered Note Maker")
+window.geometry("600x600")
+window.configure(bg="#000000")
+window.mainloop()
 import abstractive
 
 src_text = """On or before this Friday. Maximum honor. Before this Friday 2 days I used to say but maximum I can give to tidy.
