@@ -6,7 +6,6 @@ window = Tk()
 window.title("AI Powered Note Maker")
 window.geometry("600x600")
 window.configure(bg="#000000")
-
 window.mainloop()
 import abstractive
 
