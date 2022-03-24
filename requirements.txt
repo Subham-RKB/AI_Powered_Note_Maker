@@ -1,3 +1,7 @@
 sentencepiece
 transformers[torch]
+<<<<<<< HEAD
 SpeechRecognition
+=======
+SpeechRecognition
+>>>>>>> 106c31cc73b1aad3d1d904375e1417b3333679b5
