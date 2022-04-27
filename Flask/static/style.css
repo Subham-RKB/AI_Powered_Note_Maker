@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Lobster", cursive;
+}
+
+body {
+  margin: 4em auto;
+  min-height: 100vh;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+.input {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+  gap: 40px;
+}
+
+.results{
+    width: 90%;
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: 2em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.hr {
+  height: 1px;
+  width: 20vh;
+  background-color: black;
+}
+
+form,
+.textinput,
+.audioinput {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form {
+  gap: 10px;
+}
+
+textarea{
+    padding: 8px;
+}
+
+input[type="submit"] {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+
+  cursor: pointer;
+}
+
+
+.title{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+p{
+    font-size: 20px;
+}
+
+h1{
+    margin: 2em;
+    text-align: center;
+}

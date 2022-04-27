@@ -1,5 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <title>Home</title>
+  </head>
+  <body>
+      <div class="title"><h4>AI-Powered Note Maker</h4></div>
+    <div class="input">
+      <div class="audioinput">
+        <p>Summarize from class recording:</p>
+        <form action="/summarize" method="POST" enctype="multipart/form-data">
+          <input type="file" name="audioFile" id="audioFile" />
+          <input type="submit" value="Generate" />
+        </form>
+      </div>
+      <div class="or">
+          <div class="hr"> </div>
+          <h2>OR</h2>
+          <div class="hr"> </div>
+      </div>
+      <div class="textinput">
+        <p>Keypoints from study materials:</p>
+        <form action="/keypoints" method="post" enctype="multipart/form-data">
+          <textarea name="sourceText" cols="30" rows="10"></textarea>
+          <input type="submit" value="Generate" />
+        </form>
+      <div class="or">
+          <div class="hr"> </div>
+          <h2>OR</h2>
+          <div class="hr"> </div>
+      </div>
+      <div class="textinput">
+        <p>Summary from generated transcript:</p>
+        <form action="/abstractive" method="post" enctype="multipart/form-data">
+          <textarea name="sourceText" cols="30" rows="10"></textarea>
+          <input type="submit" value="Generate" />
+        </form>
+      </div>
+      <div class="audioinput">
+        <p>Record at real time and summarize:</p>
+        <p>
+            <button type="button" id="record">Record</button>
+            <button type="button" id="stopRecord" disabled>Stop</button>
+          </p>
+          <p>
+            <audio id=recordedAudio></audio>        
+          </p>
+      </div>
+    </div>
+
+    <script>
+        navigator.mediaDevices.getUserMedia({audio:true})
+    .then(stream => {handlerFunction(stream)})
+
+    function handlerFunction(stream) {
+      rec = new MediaRecorder(stream);
+      rec.ondataavailable = e => {
+        audioChunks.push(e.data);
+        if (rec.state == "inactive"){
+          let blob = new Blob(audioChunks,{type:'audio/wav'});
+          recordedAudio.src = URL.createObjectURL(blob);
+          recordedAudio.controls=true;
+          recordedAudio.autoplay=true;
+          sendData(blob)
+          }
+        }
+      }
+    
+    function sendData(audioData) {
+        var data = new FormData()
+        data.append('audioFile', audioData , 'audioFile')
+
+        fetch('/summarize', {
+            method: 'POST',
+            body: data
+
+        }).then(response => response.json()
+        ).then(json => {
+            console.log(json)
+        });
+    }
+      record.onclick = e => {
+        record.disabled = true;
+        record.style.backgroundColor = "blue"
+        stopRecord.disabled=false;
+        audioChunks = [];
+        rec.start();
+        }
+      stopRecord.onclick = e => {
+        record.disabled = false;
+        stop.disabled=true;
+        record.style.backgroundColor = "red"
+        rec.stop();
+        }
+    </script>
+  </body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,4 +126,4 @@
     </form>
 
 </body>
-</html>
+</html> -->
