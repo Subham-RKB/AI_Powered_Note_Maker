@@ -160,8 +160,8 @@ def Landing():
 def Summarize():
     if request.method == 'POST':  
         f = request.files['audioFile'] 
-        # if(f.filename[-3:] != "wav"):
-        #     f.filename += ".wav" 
+        if(f.filename[-3:] != "wav"):
+            f.filename += ".wav" 
         f.save("./audioFiles/" + f.filename) 
         print(f.filename) 
 
