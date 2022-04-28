@@ -113,3 +113,9 @@ h1{
 .hide {
     display: none;
 }
+
+h2 {
+    color: #4caf50;
+    margin: 2em;
+    text-align: center;
+}

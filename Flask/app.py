@@ -80,11 +80,18 @@ def generateKeypoints(text):
     final_summary = [word.text for word in summary]
     sentence_cnt = len(final_summary)
     
-    summary = ""
+    # headline = summary[0]
+    topWords = nlargest(2, word_frequencies, key= word_frequencies.get)
+    headline = ' '.join(topWords)
+    print(headline.title())
+
+    res = {}
+    res["summary"] = final_summary
+    res["headline"] = headline.title()
     # for idx in range(sentence_cnt):
     #     summary += str(idx + 1) + ") " + final_summary[idx] + " \n"
     # return summary
-    return final_summary
+    return res
 
 def structureText(transcript):
     text = transcript.split()
@@ -183,7 +190,7 @@ def Keypoints():
 
         summary = generateKeypoints(text)
 
-        return render_template('keypoints.html', summary = summary)
+        return render_template('keypoints.html', summary = summary["summary"], headline = summary["headline"])
 
 @app.route('/results', methods = ['GET'])
 def Results():
