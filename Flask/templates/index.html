@@ -8,13 +8,14 @@
     <title>Home</title>
   </head>
   <body>
+      <div id="loading" class="loading hide"><img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading ..."></div>
       <div class="title"><h4>AI-Powered Note Maker</h4></div>
     <div class="input">
       <div class="audioinput">
         <p>Summarize from class recording:</p>
         <form action="/summarize" method="POST" enctype="multipart/form-data">
           <input type="file" name="audioFile" id="audioFile" />
-          <input type="submit" value="Generate" />
+          <input onclick="loading()" type="submit" value="Generate" />
         </form>
       </div>
       <div class="or">
@@ -26,7 +27,7 @@
         <p>Keypoints from study materials:</p>
         <form action="/keypoints" method="post" enctype="multipart/form-data">
           <textarea name="sourceText" cols="30" rows="10"></textarea>
-          <input type="submit" value="Generate" />
+          <input onclick="loading()" type="submit" value="Generate" />
         </form>
       <div class="or">
           <div class="hr"> </div>
@@ -37,7 +38,7 @@
         <p>Summary from generated transcript:</p>
         <form action="/abstractive" method="post" enctype="multipart/form-data">
           <textarea name="sourceText" cols="30" rows="10"></textarea>
-          <input type="submit" value="Generate" />
+          <input  onclick="loading()" type="submit" value="Generate" />
         </form>
       </div>
       <div class="audioinput">
@@ -53,6 +54,10 @@
     </div>
 
     <script>
+        function loading(){
+            document.getElementById("loading").classList.remove('hide')
+        }
+
         navigator.mediaDevices.getUserMedia({audio:true})
     .then(stream => {handlerFunction(stream)})
 
@@ -61,7 +66,7 @@
       rec.ondataavailable = e => {
         audioChunks.push(e.data);
         if (rec.state == "inactive"){
-          let blob = new Blob(audioChunks,{type:'audio/wav'});
+          let blob = new Blob(audioChunks,{type:'audio/mp3'});
           recordedAudio.src = URL.createObjectURL(blob);
           recordedAudio.controls=true;
           recordedAudio.autoplay=true;
@@ -70,60 +75,52 @@
         }
       }
     
-    function sendData(audioData) {
-        var data = new FormData()
-        data.append('audioFile', audioData , 'audioFile')
-
-        fetch('/summarize', {
-            method: 'POST',
-            body: data
-
-        }).then(response => response.json()
-        ).then(json => {
-            console.log(json)
-        });
+    function createFileList(a) {
+        a = [].slice.call(Array.isArray(a) ? a : arguments)
+        for (var c, b = c = a.length, d = !0; b-- && d;) d = a[b] instanceof File
+        if (!d) throw new TypeError('expected argument to FileList is File or array of File objects')
+        for (b = (new ClipboardEvent('')).clipboardData || new DataTransfer; c--;) b.items.add(a[c])
+        return b.files
     }
-      record.onclick = e => {
+
+    function sendData(audioData) {
+        try {
+            // var file = new File([audioData], 'audioFile.mp3', {type: 'audio/mp3'})
+            const audioBlob = new Blob([audioData], { type: "audio/mp3" })
+            var data = new FormData()
+            data.append('from', "recording")
+            data.append('audioFile', audioBlob , 'audioFile.mp3')
+
+
+            fetch('/summarize', {
+                method: 'POST',
+                body: data
+
+            }).then(response => response.json()
+            ).then(json => {
+                location.href = "/results?summary="+json.summary
+            });
+        } catch(e){
+            console.log(e)
+        }
+    }
+    
+    record.onclick = e => {
         record.disabled = true;
-        record.style.backgroundColor = "blue"
+        record.style.backgroundColor = "grey"
         stopRecord.disabled=false;
         audioChunks = [];
         rec.start();
-        }
-      stopRecord.onclick = e => {
+    }
+
+    stopRecord.onclick = e => {
+        loading()
         record.disabled = false;
         stop.disabled=true;
         record.style.backgroundColor = "red"
         rec.stop();
-        }
+    }
     </script>
+
   </body>
 </html>
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Landing Page</h1>
-    <p> Summarize from class recording: </p>
-    <form action="/summarize" method="POST" enctype="multipart/form-data">
-        <input type="file" name="audioFile" id="audioFile">
-        <input type="submit" value="Generate">
-    </form>
-
-    <h2>OR</h2>
-    <p>Keypoints from study materials:</p>
-    <form action="/keypoints" method="post" enctype="multipart/form-data">
-        <textarea name="sourceText" cols="30" rows="10"></textarea>
-        <input type="submit" value="Generate">
-    </form>
-
-</body>
-</html> -->

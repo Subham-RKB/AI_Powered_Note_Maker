@@ -26,7 +26,7 @@ def convertToText(filename):
         with audioFile as source:
             audio = r.record(source)
 
-        conversion = r.recognize_google(audio)
+        conversion = r.recognize_google(audio, language="en-IN")
         transcript += conversion + " "
 
     return transcript
@@ -135,7 +135,7 @@ def generateSummary(transcript):
 
 def chunkedTranscript(path):
     global chunkCnt
-    fullAudio = AudioSegment.from_wav(path)
+    fullAudio = AudioSegment.from_file(path)
     duration = fullAudio.duration_seconds * 1000
     print(duration)
     chunkSize = 30000
@@ -160,8 +160,6 @@ def Landing():
 def Summarize():
     if request.method == 'POST':  
         f = request.files['audioFile'] 
-        if(f.filename[-3:] != "wav"):
-            f.filename += ".wav" 
         f.save("./audioFiles/" + f.filename) 
         print(f.filename) 
 
@@ -171,7 +169,12 @@ def Summarize():
         finalText = structureText(transcript)
         summary = generateSummary(finalText)
 
-        return render_template('result.html', summary = summary)
+        if request.form.get("from") == "recording":
+            res = {}
+            res["summary"] = summary
+            return res
+        else:
+            return render_template('result.html', summary = summary)
  
 @app.route('/keypoints', methods = ['POST'])
 def Keypoints():
@@ -181,6 +184,13 @@ def Keypoints():
         summary = generateKeypoints(text)
 
         return render_template('keypoints.html', summary = summary)
+
+@app.route('/results', methods = ['GET'])
+def Results():
+    if request.method == 'GET':  
+        args = request.args
+
+        return render_template('result.html', summary = args.get("summary"))
 
  
 @app.route('/abstractive', methods = ['POST'])

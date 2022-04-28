@@ -98,3 +98,18 @@ h1{
     margin: 2em;
     text-align: center;
 }
+
+.loading {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffffe1;
+}
+
+.hide {
+    display: none;
+}
