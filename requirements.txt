@@ -1,3 +1,6 @@
 sentencepiece
 transformers[torch]
 SpeechRecognition
+flask
+spacy
+pydub
